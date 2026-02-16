@@ -1,0 +1,2349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CMH8 TOOL - Professional Email Suite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --brand: #6366f1;
+      --brand-darker: #4f46e5; --brand-glow: rgba(99, 102, 241, 0.3);
+      --ok: #10b981; --ok-darker: #059669; --ok-glow: rgba(16, 185, 129, 0.3);
+      --warn: #f59e0b; --warn-darker: #d97706;
+      --warn-glow: rgba(245, 158, 11, 0.3);
+      --info: #06b6d4; --info-darker: #0891b2; --info-glow: rgba(6, 182, 212, 0.3);
+      --danger: #ef4444; --danger-darker: #dc2626;
+      --danger-glow: rgba(239, 68, 68, 0.3);
+      --primary: #3b82f6; --primary-darker: #2563eb; --primary-glow: rgba(59, 130, 246, 0.3);
+      --history: #8b5cf6; --history-darker: #7c3aed;
+      --history-glow: rgba(139, 92, 246, 0.3);
+      
+      --bg1: #f8fafc; --bg2: #f1f5f9; --text: #1e293b; --muted: #64748b; --border: #e2e8f0;
+      --panel: #ffffff;
+      --shadow: rgba(0, 0, 0, 0.08); --shadow-hover: rgba(0, 0, 0, 0.12);
+      
+      --dark-bg1: #0f172a; --dark-bg2: #1e293b; --dark-text: #f1f5f9; --dark-muted: #94a3b8;
+      --dark-border: rgba(255, 255, 255, 0.1); --dark-shadow: rgba(0, 0, 0, 0.3);
+      --dark-panel-bg: rgba(30, 41, 59, 0.7); --dark-component-bg: rgba(15, 23, 42, 0.5);
+      --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px; --radius-xl: 18px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
+      color: var(--text);
+      transition: var(--transition-slow);
+      min-height: 100vh;
+      padding: 0;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Enhanced star animation */
+    @keyframes animateStars {
+      from { transform: translateY(0px); }
+      to { transform: translateY(-2000px); }
+    }
+
+    #stars-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      pointer-events: none;
+    }
+
+    .stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2000px;
+      background-repeat: repeat;
+      background-position: center;
+      animation-name: animateStars;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    #stars1 { 
+      background-size: 200px 200px; 
+      animation-duration: 120s;
+      background-image: 
+        radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)), 
+        radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)), 
+        radial-gradient(1px 1px at 90px 40px, #ddd, rgba(0,0,0,0));
+    }
+
+    #stars2 { 
+      background-size: 300px 300px; 
+      animation-duration: 100s;
+      background-image: 
+        radial-gradient(1px 1px at 150px 120px, #ddd, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 10px 90px, #eee, rgba(0,0,0,0));
+    }
+
+    #stars3 { 
+      background-size: 400px 400px; 
+      animation-duration: 80s;
+      background-image: 
+        radial-gradient(1px 1px at 180px 140px, #ddd, rgba(0,0,0,0));
+    }
+
+    /* Premium animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 0 var(--brand-glow); }
+      70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* Main container with premium styling */
+    .main-container {
+      max-width: 1600px;
+      margin: 30px auto;
+      background: var(--panel);
+      border-radius: var(--radius-xl);
+      padding: 30px;
+      transition: var(--transition-slow);
+      animation: fadeInUp 0.6s ease-out forwards;
+      border: 1px solid transparent;
+      box-shadow: 
+        0 10px 40px var(--shadow),
+        0 0 0 1px rgba(0, 0, 0, 0.02);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .main-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--brand), var(--ok), var(--warn), var(--info));
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    }
+
+    .content-wrapper {
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    /* Enhanced typography */
+    h2 {
+      text-align: center;
+      color: var(--brand);
+      margin: 0 0 25px;
+      transition: var(--transition);
+      font-weight: 700;
+      font-size: 2rem;
+      letter-spacing: -0.025em;
+      background: linear-gradient(135deg, var(--brand) 0%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--brand), var(--primary));
+      border-radius: 2px;
+    }
+
+    h3 {
+      color: var(--text);
+      margin: 28px 0 15px;
+      transition: var(--transition);
+      font-weight: 600;
+      font-size: 1.25rem;
+      position: relative;
+      padding-left: 12px;
+    }
+
+    h3::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 18px;
+      background: var(--brand);
+      border-radius: 2px;
+    }
+
+    label {
+      font-weight: 600;
+      color: var(--text);
+      transition: var(--transition);
+      font-size: 0.9rem;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    /* Premium form elements */
+    textarea, input[type=text] {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      background: var(--bg1);
+      resize: vertical;
+      box-shadow: inset 0 2px 4px var(--shadow);
+      transition: var(--transition);
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+    }
+
+    textarea:focus, input[type=text]:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: 
+        inset 0 2px 4px var(--shadow),
+        0 0 0 3px var(--brand-glow);
+      transform: translateY(-1px);
+    }
+
+    textarea {
+      min-height: 200px;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+
+    input[type=text] {
+      max-width: 420px;
+      margin: 6px 0 12px;
+    }
+
+    /* Premium buttons */
+    .buttons {
+      margin-top: 22px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 14px 26px;
+      border: none;
+      border-radius: var(--radius-lg);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #fff;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.025em;
+      text-transform: none;
+      box-shadow: 0 4px 12px var(--shadow);
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px var(--shadow-hover);
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn:active {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px var(--shadow);
+    }
+
+    /* Button variants with gradient backgrounds */
+    .import-btn { background: linear-gradient(135deg, var(--brand), var(--brand-darker)); }
+    .clean-btn { background: linear-gradient(135deg, var(--ok), var(--ok-darker)); }
+    .export-btn { background: linear-gradient(135deg, var(--warn), var(--warn-darker)); }
+    .clear-btn { background: linear-gradient(135deg, var(--info), var(--info-darker)); }
+    .deselect-btn { background: linear-gradient(135deg, var(--danger), var(--danger-darker)); }
+    .apply-btn { background: linear-gradient(135deg, var(--primary), var(--primary-darker)); }
+    .insert-btn { background: linear-gradient(135deg, #ff5722, #e64a19); }
+    .subject-btn { background: linear-gradient(135deg, #9c27b0, #7b1fa2); }
+    .custom-name-btn { background: linear-gradient(135deg, #ff9800, #f57c00); }
+    .encode-btn { background: linear-gradient(135deg, #2196f3, #1976d2); }
+    .decode-btn { background: linear-gradient(135deg, #4caf50, #388e3c); }
+    .copy-btn { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+    .history-btn { background: linear-gradient(135deg, var(--history), var(--history-darker)); }
+    .clear-btn.extraction-clear { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+    .info-btn { background: linear-gradient(135deg, var(--info), var(--info-darker)); }
+
+
+    /* Enhanced tabs */
+    .tabs {
+      display: flex;
+      margin-bottom: 30px;
+      border-bottom: 1px solid var(--border);
+      transition: border-color 0.5s;
+      position: relative;
+    }
+
+    .tab {
+      padding: 14px 28px;
+      cursor: pointer;
+      background: transparent;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      margin-right: 4px;
+      font-weight: 600;
+      transition: var(--transition);
+      color: var(--muted);
+      position: relative;
+      border: 0;
+      font-size: 0.95rem;
+    }
+
+    .tab::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--brand), var(--primary));
+      border-radius: 2px;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .tab:hover {
+      color: var(--text);
+      background: rgba(99, 102, 241, 0.05);
+    }
+
+    .tab.active {
+      color: var(--brand);
+      font-weight: 700;
+    }
+
+    .tab.active::after {
+      width: 80%;
+    }
+
+    /* Enhanced tab content */
+    .tab-content {
+      display: none;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .tab-content.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Premium headers box */
+    .headers-box {
+      margin: 15px 0 0;
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      background: var(--bg1);
+      border: 1.5px solid var(--border);
+      max-height: 220px;
+      overflow: auto;
+      transition: var(--transition);
+      box-shadow: inset 0 2px 6px var(--shadow);
+    }
+
+    /* Enhanced toggle buttons */
+    .dark-mode-toggle {
+      position: fixed;
+      top: 25px;
+      right: 25px;
+      z-index: 1000;
+      width: 62px;
+      height: 32px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: var(--transition);
+      background: var(--muted);
+      border: 2px solid var(--border);
+      box-shadow: 0 4px 12px var(--shadow);
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .dark-mode-toggle::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .dark-mode-toggle.active {
+      background: var(--brand);
+      border-color: var(--brand);
+    }
+
+    .dark-mode-toggle.active::before {
+      transform: translateX(30px);
+    }
+
+    .history-toggle {
+      position: fixed;
+      top: 25px;
+      right: 100px;
+      z-index: 1000;
+      animation: float 3s ease-in-out infinite 0.2s;
+    }
+
+    /* Enhanced history panel */
+    .history-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 9999;
+      padding: 25px;
+      overflow-y: auto;
+      transform: translateX(100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition-slow);
+      backdrop-filter: blur(8px);
+    }
+
+    .history-panel.active {
+      transform: translateX(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Dark mode enhancements */
+    body.dark-mode {
+      background: linear-gradient(135deg, var(--dark-bg1) 0%, var(--dark-bg2) 100%);
+      color: var(--dark-text);
+    }
+
+    body.dark-mode #stars-container {
+      opacity: 1;
+    }
+
+    body.dark-mode .main-container {
+      background: var(--dark-panel-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--dark-border);
+      box-shadow: 
+        0 20px 60px var(--dark-shadow),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    body.dark-mode textarea,
+    body.dark-mode input[type=text],
+    body.dark-mode .headers-box,
+    body.dark-mode .always-box,
+    body.dark-mode .preview-wrap {
+      background: var(--dark-component-bg);
+      border: 1.5px solid var(--dark-border);
+      color: var(--dark-text);
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    body.dark-mode textarea:focus,
+    body.dark-mode input[type=text]:focus {
+      border-color: var(--brand);
+      box-shadow: 
+        inset 0 2px 6px rgba(0,0,0,0.3),
+        0 0 0 3px var(--brand-glow);
+    }
+
+    body.dark-mode .dark-mode-toggle,
+    body.dark-mode .history-toggle {
+      background: rgba(30, 41, 59, 0.8);
+      border-color: var(--dark-border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    body.dark-mode h3, 
+    body.dark-mode label {
+      color: var(--dark-text);
+    }
+
+    body.dark-mode .tabs {
+      border-color: var(--dark-border);
+    }
+
+    body.dark-mode .tab {
+      color: var(--dark-muted);
+    }
+
+    body.dark-mode .tab:hover {
+      color: var(--dark-text);
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    body.dark-mode .tab.active {
+      color: #fff;
+    }
+
+    /* Enhanced layout components */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    .left-panel {
+      grid-column: 1;
+    }
+
+    .right-panel {
+      grid-column: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .preview-section {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .output-section {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    .insert-section {
+      grid-column: 2;
+      grid-row: 3;
+    }
+
+    /* Enhanced preview section */
+    .preview-wrap {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 4px 20px var(--shadow);
+      transition: var(--transition);
+    }
+
+    .preview-wrap:hover {
+      box-shadow: 0 8px 30px var(--shadow-hover);
+    }
+
+    /* Responsive improvements */
+    @media (max-width: 1200px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+      .preview-section, .output-section, .insert-section {
+        grid-column: 1;
+      }
+      .preview-section { grid-row: 2; }
+      .output-section { grid-row: 3; }
+      .insert-section { grid-row: 4; }
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        margin: 15px;
+        padding: 20px;
+        border-radius: var(--radius-lg);
+      }
+      
+      .buttons {
+        justify-content: center;
+      }
+      
+      .btn {
+        flex: 1;
+        min-width: 140px;
+      }
+      
+      .dark-mode-toggle {
+        top: 15px;
+        right: 15px;
+      }
+      
+      .history-toggle {
+        top: 15px;
+        right: 85px;
+      }
+    }
+
+    /* Enhanced status indicators */
+    .action-status {
+      font-size: 12px;
+      color: var(--ok);
+      margin-top: 6px;
+      display: none;
+      padding: 4px 8px;
+      background: rgba(16, 185, 129, 0.1);
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--ok);
+    }
+
+    .action-status.error {
+      color: var(--danger);
+      background: rgba(239, 68, 68, 0.1);
+      border-left-color: var(--danger);
+    }
+
+    /* Enhanced extraction section */
+    .extraction-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin: 25px 0;
+      background: var(--bg1);
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--border);
+      transition: var(--transition);
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+
+    .option:hover {
+      border-color: var(--brand);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px var(--shadow);
+    }
+
+    .option input {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .option label {
+      cursor: pointer;
+      font-weight: 500;
+      margin: 0;
+    }
+
+    /* Enhanced info boxes */
+    .auto-extract-info,
+    .server-pattern-info,
+    .ip-association-info {
+      padding: 16px 20px;
+      border-radius: var(--radius-lg);
+      margin-top: 15px;
+      font-size: 0.9rem;
+      border-left: 4px solid;
+      transition: var(--transition);
+    }
+
+    .auto-extract-info {
+      background: rgba(6, 182, 212, 0.1);
+      color: #0e7490;
+      border-left-color: var(--info);
+    }
+
+    .server-pattern-info {
+      background: rgba(245, 158, 11, 0.1);
+      color: #92400e;
+      border-left-color: var(--warn);
+    }
+
+    .ip-association-info {
+      background: rgba(139, 92, 246, 0.1);
+      color: #5b21b6;
+      border-left-color: var(--history);
+    }
+
+    /* Enhanced output box */
+    .output-box {
+      background: var(--bg1);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      min-height: 150px;
+      white-space: pre-wrap;
+      font-family: 'SF Mono', monospace;
+      overflow-y: auto;
+      max-height: 300px;
+      transition: var(--transition);
+      box-shadow: inset 0 2px 6px var(--shadow);
+    }
+
+    /* Loading animation for buttons */
+    .btn.loading {
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .btn.loading::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      top: 50%;
+      left: 50%;
+      margin: -8px 0 0 -8px;
+      border: 2px solid transparent;
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: button-loading-spinner 1s ease infinite;
+    }
+
+    @keyframes button-loading-spinner {
+      from { transform: rotate(0turn); }
+      to { transform: rotate(1turn); }
+    }
+
+    /* Flex layout for encoder/decoder */
+    .flex-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+
+    .col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .encoding-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin: 15px 0;
+    }
+
+    .encoding-options label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: normal;
+      padding: 8px 12px;
+      background: var(--bg1);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+
+    .encoding-options label:hover {
+      border-color: var(--brand);
+    }
+
+    /* Viewer styles */
+    .viewer-bar {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      justify-content: space-between;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .viewer-toggles {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .toggle {
+      display: flex;
+      background: var(--bg1);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .toggle button {
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 500;
+    }
+
+    .toggle button.active {
+      background: var(--brand);
+      color: white;
+    }
+
+    .chip {
+      background: var(--ok);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .live-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+
+    /* Code view styles */
+    .code-view {
+      margin: 0;
+      padding: 20px;
+      height: 480px;
+      overflow: auto;
+      background: #0f172a;
+      color: #e2e8f0;
+      font-size: 12px;
+      line-height: 1.4;
+      border-radius: var(--radius-lg);
+      font-family: 'SF Mono', Monaco, Consolas, monospace;
+    }
+
+    .code-view code {
+      counter-reset: ln;
+    }
+
+    .code-view code span {
+      display: block;
+      white-space: pre;
+      font-family: inherit;
+    }
+
+    .code-view code span:before {
+      counter-increment: ln;
+      content: counter(ln);
+      display: inline-block;
+      width: 2.5em;
+      margin-right: 1em;
+      color: #64748b;
+    }
+
+    /* History styles */
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .history-categories {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .history-category {
+      padding: 10px 20px;
+      background: var(--bg1);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid var(--border);
+      font-weight: 500;
+    }
+
+    .history-category.active {
+      background: var(--brand);
+      color: white;
+      border-color: var(--brand);
+    }
+
+    .history-items-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .history-item {
+      background: var(--bg1);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .history-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px var(--shadow);
+      border-color: var(--brand);
+    }
+
+    .history-title {
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--brand);
+      font-size: 0.95rem;
+    }
+
+    .history-content {
+      font-size: 0.85rem;
+      color: var(--muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .history-timestamp {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .no-history {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+      font-style: italic;
+      grid-column: 1 / -1;
+    }
+
+    .clear-history {
+      display: block;
+      text-align: center;
+      margin-top: 30px;
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+    }
+
+    .clear-history:hover {
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    /* Always box styles */
+    .always-box {
+      margin: 15px 0;
+    }
+
+    .always-inner {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .filename-input {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .filename-input input {
+      flex: 1;
+      max-width: 300px;
+      margin: 0;
+    }
+
+    /* Gmail preview styles */
+    .gmail-chrome {
+      background: var(--bg1);
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .gmail-body {
+      height: 400px;
+    }
+
+    .gmail-body iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Checkbox group styles */
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+    }
+
+    .checkbox-item label {
+      margin: 0;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    /* Header checkbox styles */
+    .header-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding: 4px 0;
+    }
+
+    .header-checkbox.fixed-selected {
+      background: rgba(16, 185, 129, 0.1);
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--ok);
+    }
+
+    .header-checkbox.fixed-selected label {
+      font-weight: 700;
+      color: var(--ok-darker);
+    }
+
+    .header-checkbox.optional {
+      background: rgba(59, 130, 246, 0.05);
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--primary);
+    }
+
+    .header-checkbox input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .header-checkbox input[type="checkbox"]:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- JSZip library for zip export functionality -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+  <div id="stars-container">
+    <div id="stars1" class="stars"></div>
+    <div id="stars2" class="stars"></div>
+    <div id="stars3" class="stars"></div>
+  </div>
+
+  <div class="dark-mode-toggle" id="darkModeToggle" title="Toggle Dark Mode"></div>
+
+  <button class="history-toggle btn history-btn" id="historyToggle">
+    <span>📜 History</span>
+  </button>
+
+  <div class="history-panel" id="historyPanel">
+    <div class="history-header">
+      <h2>Activity History</h2>
+      <button class="close-history btn danger-btn" id="closeHistory">Close</button>
+    </div>
+    <div class="history-categories" id="historyCategories">
+      <div class="history-category active" data-category="all">All Activities</div>
+      <div class="history-category" data-category="cleaned">Cleaned Content</div>
+      <div class="history-category" data-category="htmlInsert">HTML Inserted</div>
+      <div class="history-category" data-category="export">Exported Files</div>
+      <div class="history-category" data-category="subject">Subject Changes</div>
+    </div>
+    <div class="history-items-container" id="historyItems"></div>
+    <div class="clear-history" id="clearHistory">Clear All History</div>
+  </div>
+
+  <div class="main-container">
+    <div class="content-wrapper">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:12px;text-align:center;font-weight:500;letter-spacing:0.05em;">
+        YOUSSEF DERRAZ CMH8 • PROFESSIONAL EMAIL SUITE
+      </div>
+      <h2>NEWSLETTER Cleaner</h2>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="email-cleaner">📧 Email Cleaner</button>
+        <button class="tab" data-tab="encoder-decoder">🔐 Encoder/Decoder</button>
+        <button class="tab" data-tab="extraction">🔍 Extraction Tool</button>
+      </div>
+
+      <div class="tab-content active show" id="email-cleaner">
+        <div class="main-layout">
+          <div class="left-panel">
+            <label for="input">Paste NEWSLETTER:</label>
+            <textarea id="input" placeholder="Paste header here...">From: Restaurant Ordering System <help@newslitters.com>
+Subject: Test Email
+Date: Wed, 15 Nov 2023 10:30:00 +0000
+To: recipient@example.com
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Test Email&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;p&gt;This is a test email content.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+
+            <input id="fileInput" type="file" accept=".txt,.eml,text/*" multiple style="display:none"/>
+            <div class="buttons">
+              <button class="btn import-btn" id="importBtn">📁 Import</button>
+              <button class="btn clean-btn" id="cleanBtn">✨ Clean</button>
+              <button class="btn export-btn" id="exportBtn">💾 Export</button>
+              <button class="btn clear-btn" id="clearBtn">🗑️ Clear</button>
+              <button class="btn deselect-btn" id="deselectBtn">❌ Deselect Optional</button>
+            </div>
+            
+            <div class="filename-input">
+              <label for="exportFilename">Export filename:</label>
+              <input type="text" id="exportFilename" placeholder="Enter filename..." value="cleaned_header.txt" />
+            </div>
+
+            <h3>Choose PARAMS to remove:</h3>
+            <div class="always-box">
+              <label><b>Fixed params (always removed) 🔒</b></label>
+              <div style="font-size:12px; color:var(--muted); margin:5px 0 10px 0;">
+                These params are always selected and cannot be changed
+              </div>
+            </div>
+            <div id="headersBox" class="headers-box">
+              <p style="color:var(--muted)"> Paste or Import a header to see available fields...</p>
+            </div>
+
+            <div class="options">
+              <label>Custom From Name:</label>
+              <input type="text" id="customName" placeholder="FROM NAME (leave empty to keep original)" value="" />
+              <button class="btn custom-name-btn" id="applyCustomNameBtn">👤 Apply From Name</button>
+              <div id="fromNameStatus" class="action-status">Already applied</div>
+              
+              <div class="checkbox-group">
+                <div class="checkbox-item">
+                  <input type="checkbox" id="toggleRdns"/>
+                  <label for="toggleRdns">ADD [RDNS]</label>
+                  <div id="rdnsStatus" class="action-status">Already applied</div>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="toggleRpath"/>
+                  <label for="toggleRpath">ADD [P_RPATH]</label>
+                  <div id="rpathStatus" class="action-status">Already applied</div>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="toggleEid"/>
+                  <label for="toggleEid">Add [eid]</label>
+                  <div id="eidStatus" class="action-status">Already applied</div>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="toggleIp"/>
+                  <label for="toggleIp">ADD [ip]</label>
+                  <div id="ipStatus" class="action-status">Already applied</div>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="toggleHead"/>
+                  <label for="toggleHead">Add &lt;head&gt;&lt;select&gt; hide news content</label>
+                  <div id="headStatus" class="action-status">Already applied</div>
+                </div>
+              </div>
+              <button class="btn apply-btn" id="applyBtn"> Apply Transformations</button>
+            </div>
+
+            <div class="options">
+              <label>Custom Subject:</label>
+              <input type="text" id="customSubject" placeholder="Enter custom subject..." />
+              <button class="btn subject-btn" id="subjectBtn"> Apply Subject</button>
+              <div id="subjectStatus" class="action-status">Already applied</div>
+            </div>
+          </div>
+
+          <div class="right-panel">
+            <div class="preview-section">
+              <div class="viewer-bar">
+                <div class="viewer-toggles">
+                  <div class="toggle" role="tablist" aria-label="Viewer mode">
+                    <button id="btnGmail" class="active" role="tab" aria-selected="true">📨 Gmail View</button>
+                    <button id="btnSource" role="tab" aria-selected="false">&lt;/&gt; Source View</button>
+                  </div>
+                  <span class="chip">Live</span>
+                </div>
+                <label class="live-check"><input type="checkbox" id="liveToggle" checked /> Update while typing</label>
+              </div>
+
+              <div class="preview-wrap">
+                <div id="gmailPreview" style="display:block">
+                  <div class="gmail-chrome">
+                    <span class="chip">Inbox</span>
+                    <span style="font-weight:600">Preview</span>
+                    <span style="margin-left:auto; font-size:12px; color:var(--muted)">(Mock Gmail UI)</span>
+                  </div>
+                  <div class="gmail-body">
+                    <iframe id="gmailFrame" title="Gmail-like preview"></iframe>
+                  </div>
+                </div>
+                <pre id="sourceView" class="code-view" style="display:none"><code id="codeBlock"></code></pre>
+              </div>
+            </div>
+
+            <div class="output-section">
+              <h3>Cleaned STR:</h3>
+              <textarea id="output" placeholder="Result will appear here..."></textarea>
+              <div class="buttons" style="margin-top: 12px; justify-content: flex-start;">
+                <button class="btn copy-btn" id="copyOutputBtn">📋 Copy Cleaned STR</button>
+              </div>
+              </div>
+
+            <div class="insert-section">
+              <div class="options">
+                <label>Insert HTML:</label>
+                <textarea id="insertText" placeholder="Enter text to insert above &lt;head&gt;&lt;select&gt;..."></textarea><br/>
+                <button class="btn insert-btn" id="insertBtn">📄 Insert HTML</button>
+                <div id="insertStatus" class="action-status">Already applied</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="encoder-decoder">
+        <div class="flex-2col">
+          <div class="col">
+            <h3>Encode/Decode Text</h3>
+            <label for="encodeInput">Input Text:</label>
+            <textarea id="encodeInput" placeholder="Enter text to encode or decode..."></textarea>
+            
+            <div class="encoding-options">
+              <label><input type="radio" name="encodingType" value="base64" checked> Base64</label>
+              <label><input type="radio" name="encodingType" value="url"> URL Encoding</label>
+              <label><input type="radio" name="encodingType" value="hex"> Hex</label>
+              <label><input type="radio" name="encodingType" value="quoted-printable"> Quoted-Printable</label>
+            </div>
+            
+            <div class="buttons">
+              <button class="btn encode-btn" id="encodeBtn">Encode</button>
+              <button class="btn decode-btn" id="decodeBtn">Decode</button>
+              <button class="btn clear-btn" id="clearEncodeBtn">Clear</button>
+            </div>
+            
+            <h3>Result:</h3>
+            <textarea id="encodeOutput" placeholder="Result will appear here..."></textarea>
+          </div>
+          
+          <div class="col">
+            <h3>About Encoding Types</h3>
+            <div class="headers-box">
+              <p><strong>Base64 Encoding:</strong> Converts binary data into ASCII characters. Commonly used for email attachments and data URLs.</p>
+              <p><strong>URL Encoding:</strong> Replaces unsafe ASCII characters with a "%" followed by two hexadecimal digits.</p>
+              <p><strong>Hex Encoding:</strong> Represents data with hexadecimal values (0-9, A-F).</p>
+              <p><strong>Quoted-Printable:</strong> Encodes 8-bit characters into 7-bit ASCII. Used for MIME email messages.</p>
+            </div>
+            
+            <h3>Quick Actions</h3>
+            <div class="buttons">
+              <button class="btn copy-btn" id="copyEncodeBtn">Copy Result</button>
+              <button class="btn export-btn" id="swapEncodeBtn">Swap Input/Output</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="extraction">
+        <div class="input-section">
+            <h3>Input Text</h3>
+            <textarea id="inputText" placeholder="Paste your email snippets here, separated by a blank line...">Call of Duty
+Complete your Call of Duty registration
+ - 173.232.171.36 VERIFY EMAIL NOW
+
+Example Company
+Another Subject Line
+Here is another IP: 192.168.1.1</textarea>
+            
+            <div class="extraction-options">
+                <div class="option"> <input type="checkbox" id="associateIPs"> <label for="associateIPs">Associate IPs with Sender/Subject</label> </div>
+                <div class="option"> <input type="checkbox" id="extractIPs" checked> <label for="extractIPs">Extract IP Addresses (Simple)</label> </div>
+                <div class="option"> <input type="checkbox" id="extractServers" checked> <label for="extractServers">Extract Server Names (Simple)</label> </div>
+                <div class="option"> <input type="checkbox" id="extractDomains" checked> <label for="extractDomains">Extract Domains (Simple)</label> </div>
+            </div>
+
+            <div id="associationFilterContainer" style="display: none; margin-top: 15px;">
+                <label for="associationFilter">Filter by Sender or Subject:</label>
+                <input type="text" id="associationFilter" placeholder="Enter keyword to filter results..." style="max-width: 100%; margin-top: 6px;">
+            </div>
+            
+            <div class="ip-association-info"> <strong>IP Association Format:</strong> For best results, paste each email snippet separated by a blank line, with the Sender on the first line and the Subject on the second.</div>
+            <div class="auto-extract-info"> <strong>Auto-Extract Enabled:</strong> Results update automatically as you type or change options. </div>
+            <div class="buttons"> 
+              <button class="copy-btn btn" id="copyExtractionBtn">Copy Results</button> 
+              <button class="clear-btn extraction-clear btn" id="clearExtractionBtn">Clear Text</button> 
+            </div>
+        </div>
+        
+        <div class="output-section">
+            <h3>Extracted Results</h3>
+            <div class="output-box" id="extractionOutputText"></div>
+            <p class="results-info" id="resultsInfo">No results yet. Start typing or paste text to see extracted items.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Fixed always-selected params (locked - user cannot change these)
+    const FIXED_SELECTED_PARAMS = [
+      'ARC-Authentication-Results',
+      'ARC-Message-Signature', 
+      'ARC-Seal',
+      'Authentication-Results',
+      'DKIM-Signature',
+      'Delivered-To',
+      'Received-SPF',
+      'Return-Path',
+      'X-Entity-ID',
+      'X-FA-Origin',
+      'X-Google-Smtp-Source',
+      'X-Received',
+      'X-SG-EID',
+      'sender'
+    ];
+
+    // Tab functionality
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabId = tab.getAttribute('data-tab');
+        tabs.forEach(t => t.classList.remove('active'));
+        tabContents.forEach(c => { 
+          c.classList.remove('active'); 
+          c.classList.remove('show'); 
+        });
+        tab.classList.add('active');
+        const activeContent = document.getElementById(tabId);
+        activeContent.classList.add('active');
+        setTimeout(() => { 
+          activeContent.classList.add('show'); 
+        }, 10);
+      });
+    });
+
+    // Dark mode functionality
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    darkModeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      darkModeToggle.classList.toggle('active');
+      const isDarkMode = document.body.classList.contains('dark-mode');
+      localStorage.setItem('darkMode', isDarkMode);
+    });
+
+    // Initialize dark mode from localStorage
+    window.addEventListener('load', () => {
+      const darkMode = localStorage.getItem('darkMode') === 'true';
+      if (darkMode) {
+        document.body.classList.add('dark-mode');
+        darkModeToggle.classList.add('active');
+      }
+    });
+
+    // History panel functionality
+    const historyToggle = document.getElementById('historyToggle');
+    const historyPanel = document.getElementById('historyPanel');
+    const closeHistoryBtn = document.getElementById('closeHistory');
+
+    historyToggle.addEventListener('click', () => {
+      historyPanel.classList.add('active');
+    });
+
+    closeHistoryBtn.addEventListener('click', () => {
+      historyPanel.classList.remove('active');
+    });
+
+    // Close history when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!historyPanel.contains(e.target) && e.target !== historyToggle && !historyToggle.contains(e.target)) {
+        historyPanel.classList.remove('active');
+      }
+    });
+
+    // Email Cleaner Functionality
+    const fileInput = document.getElementById('fileInput');
+    const importBtn = document.getElementById('importBtn');
+    const cleanBtn = document.getElementById('cleanBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const deselectBtn = document.getElementById('deselectBtn');
+    const applyBtn = document.getElementById('applyBtn');
+    const inputArea = document.getElementById('input');
+    const outputArea = document.getElementById('output');
+    const headersBox = document.getElementById('headersBox');
+    
+    const copyOutputBtn = document.getElementById('copyOutputBtn');
+
+    // Transformation buttons
+    const toggleRdns = document.getElementById('toggleRdns');
+    const toggleRpath = document.getElementById('toggleRpath');
+    const toggleEid = document.getElementById('toggleEid');
+    const toggleIp = document.getElementById('toggleIp');
+    const toggleHead = document.getElementById('toggleHead');
+    const applyCustomNameBtn = document.getElementById('applyCustomNameBtn');
+    const customNameInput = document.getElementById('customName');
+    const subjectBtn = document.getElementById('subjectBtn');
+    const customSubjectInput = document.getElementById('customSubject');
+    const insertBtn = document.getElementById('insertBtn');
+    const insertTextInput = document.getElementById('insertText');
+
+    // Status elements
+    const rdnsStatus = document.getElementById('rdnsStatus');
+    const rpathStatus = document.getElementById('rpathStatus');
+    const eidStatus = document.getElementById('eidStatus');
+    const ipStatus = document.getElementById('ipStatus');
+    const headStatus = document.getElementById('headStatus');
+    const fromNameStatus = document.getElementById('fromNameStatus');
+    const subjectStatus = document.getElementById('subjectStatus');
+    const insertStatus = document.getElementById('insertStatus');
+
+    // Track applied transformations
+    let transformationsApplied = {
+      rdns: false,
+      rpath: false,
+      eid: false,
+      ip: false,
+      head: false,
+      fromName: false,
+      subject: false,
+      insert: false
+    };
+
+    // Import file functionality
+    importBtn.addEventListener('click', () => fileInput.click());
+
+    // UPDATED: Multi-file import logic
+    fileInput.addEventListener('change', async (evt) => {
+      const files = evt.target.files; 
+      if (!files || files.length === 0) return;
+
+      let combinedText = "";
+      const separator = "\n\n----------------------------------------\n\n";
+
+      try {
+        // Loop through all selected files
+        for (let i = 0; i < files.length; i++) {
+          const text = await files[i].text();
+          
+          // Append filename header for clarity and content
+          combinedText += `[FILE IMPORT: ${files[i].name}]\n` + text;
+          
+          // Add separator if it's not the last file
+          if (i < files.length - 1) {
+            combinedText += separator;
+          }
+        }
+
+        // Set the result to the input area
+        inputArea.value = combinedText;
+        
+        // Reset file input
+        fileInput.value = '';
+        
+        // Trigger existing logic to parse headers and reset transformations
+        buildHeaderCheckboxes();
+        resetTransformations();
+        
+      } catch (error) {
+        alert('Error reading files: ' + error.message);
+      }
+    });
+
+    // Reset transformations when new content is pasted
+    inputArea.addEventListener('input', () => {
+      buildHeaderCheckboxes();
+      resetTransformations();
+    });
+
+    function resetTransformations() {
+      transformationsApplied = {
+        rdns: false,
+        rpath: false,
+        eid: false,
+        ip: false,
+        head: false,
+        fromName: false,
+        subject: false,
+        insert: false
+      };
+      
+      // Hide all status messages
+      document.querySelectorAll('.action-status').forEach(status => {
+        status.style.display = 'none';
+      });
+      
+      // Uncheck all checkboxes
+      toggleRdns.checked = false;
+      toggleRpath.checked = false;
+      toggleEid.checked = false;
+      toggleIp.checked = false;
+      toggleHead.checked = false;
+    }
+
+    // Build header checkboxes with fixed selected params
+    function buildHeaderCheckboxes() {
+      const text = inputArea.value;
+      if (!text.trim()) {
+        headersBox.innerHTML = "<p style='color:var(--muted)'>Paste or Import a header to see available fields...</p>";
+        return;
+      }
+      
+      const matches = [...text.matchAll(/^([\w\-]+):/gmi)].map(m => m[1]);
+      const unique = [...new Set(matches)].sort();
+      
+      if (!unique.length) {
+        headersBox.innerHTML = "<p style='color:var(--muted)'>No headers found.</p>";
+        return;
+      }
+      
+      headersBox.innerHTML = "";
+      
+      // Separate fixed params from optional params
+      const fixedParams = [];
+      const optionalParams = [];
+      unique.forEach(h => {
+        if (FIXED_SELECTED_PARAMS.includes(h)) {
+          fixedParams.push(h);
+        } else {
+          optionalParams.push(h);
+        }
+      });
+      
+      // Display fixed params first (always selected and locked)
+      if (fixedParams.length > 0) {
+        fixedParams.forEach(h => {
+          const id = "chk_" + h.replace(/[^a-z0-9]/gi, "_");
+          const div = document.createElement("div");
+          div.className = 'header-checkbox fixed-selected';
+          div.innerHTML = `
+            <input type="checkbox" id="${id}" data-header="${h}" checked disabled>
+            <label for="${id}">${h} 🔒</label>
+          `;
+          headersBox.appendChild(div);
+        });
+        
+        // Add separator
+        const separator = document.createElement("div");
+        separator.style.padding = "10px 0 5px 0";
+        separator.style.borderBottom = "1px solid var(--border)";
+        separator.style.marginBottom = "10px";
+        separator.innerHTML = '<strong style="color:var(--primary)">Optional Params (choose which to remove):</strong>';
+        headersBox.appendChild(separator);
+      }
+      
+      // Display optional params (unselected by default, user can choose)
+      optionalParams.forEach(h => {
+        const id = "chk_" + h.replace(/[^a-z0-9]/gi, "_");
+        const div = document.createElement("div");
+        div.className = 'header-checkbox optional';
+        div.innerHTML = `
+          <input type="checkbox" id="${id}" data-header="${h}">
+          <label for="${id}">${h}</label>
+        `;
+        headersBox.appendChild(div);
+      });
+    }
+
+    // Clean header functionality
+    cleanBtn.addEventListener('click', () => {
+      let text = inputArea.value;
+      if (!text.trim()) {
+        alert("Paste or import a header first.");
+        return;
+      }
+      
+      // Always remove fixed params
+      FIXED_SELECTED_PARAMS.forEach(header => {
+        const regex = new RegExp(`^${header}.*(?:\r?\n[ \t].*)*`, 'gmi');
+        text = text.replace(regex, '');
+      });
+      
+      // Remove optional params that are checked
+      const optionalChecks = headersBox.querySelectorAll("input[type=checkbox]:not(:disabled):checked");
+      optionalChecks.forEach(chk => {
+        const header = chk.dataset.header;
+        const regex = new RegExp(`^${header}.*(?:\r?\n[ \t].*)*`, 'gmi');
+        text = text.replace(regex, '');
+      });
+      
+      // Join the lines back and then remove all empty/whitespace-only lines
+      const cleanedText = text
+        .split('\n')
+        .filter(line => line.trim() !== '')
+        .join('\n');
+      
+      outputArea.value = cleanedText;
+      resetTransformations();
+    });
+    
+    // Apply transformations functionality
+    applyBtn.addEventListener('click', () => {
+      let text = outputArea.value || inputArea.value;
+      if (!text.trim()) {
+        alert("Please clean the header first or paste some content.");
+        return;
+      }
+
+      let changed = false;
+
+      // Apply RDNS transformation
+      if (toggleRdns.checked && !transformationsApplied.rdns) {
+        const rdnsRegex = /^(From:\s*.*)@([^>\s]+)(>.*)?$/gmi;
+        let rdnsModified = false;
+        text = text.replace(rdnsRegex, (match, prefix, domain, suffix = '') => {
+          rdnsModified = true;
+          return `${prefix}@[RDNS]${suffix}`;
+        });
+        if (rdnsModified) {
+          transformationsApplied.rdns = true;
+          rdnsStatus.style.display = 'block';
+          changed = true;
+        }
+      }
+
+      // Apply P_RPATH transformation
+      if (toggleRpath.checked && !transformationsApplied.rpath) {
+        const rpathRegex = /^(From:\s*.*)@([^>\s]+)(>.*)?$/gmi;
+        let rpathModified = false;
+        text = text.replace(rpathRegex, (match, prefix, domain, suffix = '') => {
+          rpathModified = true;
+          return `${prefix}@[P_RPATH]${suffix}`;
+        });
+        if (rpathModified) {
+          transformationsApplied.rpath = true;
+          rpathStatus.style.display = 'block';
+          changed = true;
+        }
+      }
+
+      // Apply eid transformation
+      if (toggleEid.checked && !transformationsApplied.eid) {
+        const eidRegex = /^Message-ID:\s*<([^@>]+)@([^>]+)>/gmi;
+        if (eidRegex.test(text)) {
+          text = text.replace(eidRegex, "Message-ID: <$1[eid]@$2>");
+          transformationsApplied.eid = true;
+          eidStatus.style.display = 'block';
+          changed = true;
+        }
+      }
+
+      // Apply ip transformation
+      if (toggleIp.checked && !transformationsApplied.ip) {
+        if (!text.includes("[ip]")) {
+          text = text.replace(/(<!DOCTYPE|<html|<img|<body|<head)/i, "\n[ip]\n$1");
+          transformationsApplied.ip = true;
+          ipStatus.style.display = 'block';
+          changed = true;
+        }
+      }
+
+      // Apply head/select transformation
+      if (toggleHead.checked && !transformationsApplied.head) {
+        if (!text.includes("<head><select>")) {
+          const headSelectPattern = /(<!DOCTYPE|<html|<body|<head)/i;
+          text = text.replace(headSelectPattern, "<head><select>\n$1");
+          transformationsApplied.head = true;
+          headStatus.style.display = 'block';
+          changed = true;
+        }
+      }
+
+      if (changed) {
+        outputArea.value = text.trim();
+      } else {
+        alert("No new transformations applied. These actions may have already been applied to this content.");
+      }
+    });
+
+    // Apply custom name functionality
+    applyCustomNameBtn.addEventListener('click', () => {
+      let text = outputArea.value || inputArea.value;
+      if (!text.trim()) {
+        alert("Please clean the header first or paste some content.");
+        return;
+      }
+
+      const customName = customNameInput.value.trim();
+      if (!customName) {
+        alert("Please enter a custom From name.");
+        return;
+      }
+
+      if (transformationsApplied.fromName) {
+        alert("Custom From Name has already been applied to this content.");
+        return;
+      }
+
+      const fromRegex = /^From:\s*(.*?)\s*<([^>]+)>/gmi;
+      if (fromRegex.test(text)) {
+        text = text.replace(fromRegex, `From: ${customName} <$2>`);
+        outputArea.value = text.trim();
+        transformationsApplied.fromName = true;
+        fromNameStatus.style.display = 'block';
+      } else {
+        alert("No 'From' header with an angle-bracketed email found to modify.");
+      }
+    });
+
+    // Apply custom subject functionality
+    subjectBtn.addEventListener('click', () => {
+      let text = outputArea.value || inputArea.value;
+      if (!text.trim()) {
+        alert("Please clean the header first or paste some content.");
+        return;
+      }
+
+      const customSubject = customSubjectInput.value.trim();
+      if (!customSubject) {
+        alert("Please enter a custom subject.");
+        return;
+      }
+
+      if (transformationsApplied.subject) {
+        alert("Subject has already been applied to this content.");
+        return;
+      }
+
+      if (text.includes("Subject:")) {
+        text = text.replace(/^Subject:.*$/gmi, `Subject: ${customSubject}`);
+      } else {
+        text = `Subject: ${customSubject}\n${text}`;
+      }
+      
+      outputArea.value = text;
+      transformationsApplied.subject = true;
+      subjectStatus.style.display = 'block';
+    });
+
+    // Insert HTML functionality
+    insertBtn.addEventListener('click', () => {
+      let text = outputArea.value || inputArea.value;
+      if (!text.trim()) {
+        alert("Please clean the header first or paste some content.");
+        return;
+      }
+
+      const customText = insertTextInput.value.trim();
+      if (!customText) {
+        alert("Please enter some HTML to insert.");
+        return;
+      }
+
+      if (transformationsApplied.insert) {
+        alert("HTML has already been inserted into this content.");
+        return;
+      }
+
+      const headSelectPattern = /(<head>\s*<select>)/i;
+      if (headSelectPattern.test(text)) {
+        text = text.replace(headSelectPattern, `\n${customText}\n$1`);
+        outputArea.value = text;
+        transformationsApplied.insert = true;
+        insertStatus.style.display = 'block';
+      } else {
+        alert("No <head><select> tag found in the content. Please apply the 'Add <head><select>' option first.");
+      }
+    });
+
+    // Clear functionality
+    clearBtn.addEventListener('click', () => {
+      inputArea.value = '';
+      outputArea.value = '';
+      headersBox.innerHTML = "<p style='color:var(--muted)'>Paste or Import a header to see available fields...</p>";
+      resetTransformations();
+    });
+
+    // Deselect all functionality (only affects optional params)
+    deselectBtn.addEventListener('click', () => {
+      headersBox.querySelectorAll("input[type=checkbox]:not(:disabled)").forEach(chk => {
+        chk.checked = false;
+      });
+    });
+
+    // ================== UPDATED EXPORT FUNCTIONALITY ==================
+    exportBtn.addEventListener('click', () => {
+      const text = outputArea.value;
+      if (!text.trim()) {
+        alert("Nothing to export.");
+        return;
+      }
+      
+      // Get the base filename from the input field
+      const baseFilename = document.getElementById('exportFilename').value.replace('.txt', '') || 'cleaned_header';
+      
+      // Ask if user wants separate files or one combined file
+      const exportChoice = confirm("Found multiple sections. Export as:\n\n• OK = Separate numbered files\n• Cancel = Single combined file");
+      
+      if (exportChoice) {
+        // Export as separate numbered files
+        exportSeparateFiles(text, baseFilename);
+      } else {
+        // Export as single combined file
+        exportSingleFile(text, baseFilename);
+      }
+    });
+
+    function exportSeparateFiles(text, baseFilename) {
+      // Split content by separator patterns (looking for import separators or blank lines)
+      const separators = [
+        /\[FILE IMPORT:.*?\]\n/,  // File import headers
+        /\n-{5,}\n/,              // 5+ dashes on a line
+        /\n\*{5,}\n/,             // 5+ asterisks on a line
+        /\n_{5,}\n/               // 5+ underscores on a line
+      ];
+      
+      let sections = [text];
+      
+      // Try each separator pattern
+      for (const separator of separators) {
+        if (separator.test(sections[0])) {
+          sections = sections[0].split(separator);
+          break;
+        }
+      }
+      
+      // Also try splitting by double newline if no other separator found
+      if (sections.length === 1 && sections[0].includes('\n\n')) {
+        sections = sections[0].split(/\n\n+/);
+      }
+      
+      // Clean up sections (remove empty ones, trim whitespace)
+      const cleanSections = sections
+        .map(section => {
+          // Remove file import headers if present
+          section = section.replace(/^\[FILE IMPORT:.*?\]\n/, '');
+          return section.trim();
+        })
+        .filter(section => section.length > 10); // Filter out very short sections
+      
+      if (cleanSections.length <= 1) {
+        alert("No separate sections found. Exporting as single file instead.");
+        exportSingleFile(text, baseFilename);
+        return;
+      }
+      
+      // Ask about empty lines
+      const addEmptyLines = confirm(`Found ${cleanSections.length} sections. Add 5 empty lines between headers?`);
+      
+      // Create ZIP archive
+      createZipArchive(cleanSections, baseFilename, addEmptyLines);
+    }
+
+    function exportSingleFile(text, baseFilename) {
+      // Ask about empty lines
+      const addEmptyLines = confirm("Add 5 empty lines between header sections in the single file?");
+      
+      let processedText = text;
+      
+      if (addEmptyLines) {
+        processedText = addEmptyLinesBetweenHeaders(processedText);
+      }
+      
+      processedText = cleanExtraFormatting(processedText);
+      
+      // Create and download single file
+      const blob = new Blob([processedText], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${baseFilename}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      alert(`Exported: ${baseFilename}.txt`);
+    }
+
+    function addEmptyLinesBetweenHeaders(content) {
+      const lines = content.split('\n');
+      const result = [];
+      let inHeaderSection = false;
+      
+      lines.forEach((line, index) => {
+        result.push(line);
+        
+        // Check if this is a header line (contains colon but not HTML)
+        if (line.includes(':') && !line.includes('<') && !line.includes('>')) {
+          inHeaderSection = true;
+          
+          // Check if next line exists and doesn't look like continuation or new header
+          if (index < lines.length - 1) {
+            const nextLine = lines[index + 1];
+            const isContinuation = /^\s/.test(nextLine);
+            const isNewHeader = /^[A-Z][a-zA-Z\-]+:/.test(nextLine);
+            const isHTML = nextLine.includes('<') || nextLine.includes('>');
+            
+            if (!isContinuation && !isNewHeader && !isHTML) {
+              // We're transitioning from headers to body, add empty lines
+              result.push('', '', '', '', '');
+              inHeaderSection = false;
+            }
+          }
+        }
+      });
+      
+      return result.join('\n');
+    }
+
+    function cleanExtraFormatting(content) {
+      // Remove excessive empty lines but keep structure
+      let cleaned = content
+        .replace(/\r\n/g, '\n') // Normalize line endings
+        .replace(/\n{4,}/g, '\n\n\n') // Max 3 consecutive empty lines
+        .replace(/[ \t]+$/gm, '') // Remove trailing spaces
+        .replace(/\t+/g, '    ') // Convert tabs to spaces
+        .replace(/^\s+|\s+$/g, ''); // Trim entire content
+      
+      // Ensure there's a blank line before HTML content if not present
+      if (cleaned.includes('<!DOCTYPE') || cleaned.includes('<html')) {
+        if (!cleaned.match(/\n\n\s*<!/) && !cleaned.match(/\n\n\s*<html/)) {
+          cleaned = cleaned.replace(/(\n)(\s*<!(DOCTYPE|html))/i, '$1\n$2');
+        }
+      }
+      
+      return cleaned;
+    }
+
+    function createZipArchive(sections, baseFilename, addEmptyLines) {
+      // Check if JSZip is available
+      if (window.JSZip) {
+        const zip = new JSZip();
+        
+        sections.forEach((section, index) => {
+          let processedSection = section;
+          
+          if (addEmptyLines) {
+            processedSection = addEmptyLinesBetweenHeaders(processedSection);
+          }
+          
+          processedSection = cleanExtraFormatting(processedSection);
+          
+          const fileNumber = String(index + 1).padStart(3, '0');
+          const filename = `${baseFilename}_${fileNumber}.txt`;
+          zip.file(filename, processedSection);
+        });
+        
+        zip.generateAsync({ type: "blob" })
+          .then(function(blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${baseFilename}_pack.zip`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert(`Successfully exported ${sections.length} files in ${baseFilename}_pack.zip`);
+          })
+          .catch(function(error) {
+            alert("Error creating zip file: " + error.message);
+            // Fallback to individual file downloads
+            downloadFilesIndividually(sections, baseFilename, addEmptyLines);
+          });
+      } else {
+        // JSZip not loaded, download files individually
+        alert("JSZip library not loaded. Downloading files individually instead.");
+        downloadFilesIndividually(sections, baseFilename, addEmptyLines);
+      }
+    }
+
+    function downloadFilesIndividually(sections, baseFilename, addEmptyLines) {
+      let downloadCount = 0;
+      
+      sections.forEach((section, index) => {
+        let processedSection = section;
+        
+        if (addEmptyLines) {
+          processedSection = addEmptyLinesBetweenHeaders(processedSection);
+        }
+        
+        processedSection = cleanExtraFormatting(processedSection);
+        
+        const fileNumber = String(index + 1).padStart(3, '0');
+        const filename = `${baseFilename}_${fileNumber}.txt`;
+        
+        // Create and download individual file
+        const blob = new Blob([processedSection], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        downloadCount++;
+        
+        // If this is the last file, show alert
+        if (downloadCount === sections.length) {
+          setTimeout(() => {
+            alert(`Downloaded ${downloadCount} individual files.`);
+          }, 500);
+        }
+      });
+    }
+
+    // Copy Cleaned STR functionality
+    copyOutputBtn.addEventListener('click', () => {
+      const textToCopy = outputArea.value;
+
+      if (!textToCopy.trim()) {
+        alert("Nothing to copy!");
+        return;
+      }
+
+      // Use the modern clipboard API
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        // Provide user feedback
+        const originalText = copyOutputBtn.innerHTML;
+        copyOutputBtn.innerHTML = '✅ Copied!';
+        
+        // Revert the button text after 2 seconds
+        setTimeout(() => {
+          copyOutputBtn.innerHTML = originalText;
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy text: ', err);
+        alert('Failed to copy. Please try again.');
+      });
+    });
+
+    // Encoder/Decoder Functionality
+    const encodeInput = document.getElementById('encodeInput');
+    const encodeOutput = document.getElementById('encodeOutput');
+    const encodeBtn = document.getElementById('encodeBtn');
+    const decodeBtn = document.getElementById('decodeBtn');
+    const clearEncodeBtn = document.getElementById('clearEncodeBtn');
+    const copyEncodeBtn = document.getElementById('copyEncodeBtn');
+    const swapEncodeBtn = document.getElementById('swapEncodeBtn');
+    const encodingTypeRadios = document.querySelectorAll('input[name="encodingType"]');
+
+    encodeBtn.addEventListener('click', () => {
+      const text = encodeInput.value;
+      const encodingType = document.querySelector('input[name="encodingType"]:checked').value;
+      
+      let result = '';
+      try {
+        switch(encodingType) {
+          case 'base64':
+            result = btoa(unescape(encodeURIComponent(text)));
+            break;
+          case 'url':
+            result = encodeURIComponent(text);
+            break;
+          case 'html':
+            result = text.replace(/[&<>"']/g, m => ({
+              '&': '&amp;', '<': '&lt;', '>': '&gt;',
+              '"': '&quot;', "'": '&#39;'
+            }[m]));
+            break;
+          case 'hex':
+            result = Array.from(text).map(c => 
+              c.charCodeAt(0).toString(16).padStart(2, '0')
+            ).join(' ');
+            break;
+          case 'quoted-printable':
+            // Simple quoted-printable implementation
+            result = text.split('').map(char => {
+              const code = char.charCodeAt(0);
+              return code > 127 ? '=' + code.toString(16).toUpperCase() : char;
+            }).join('');
+            break;
+        }
+        encodeOutput.value = result;
+      } catch (error) {
+        encodeOutput.value = 'Error: ' + error.message;
+      }
+    });
+
+    decodeBtn.addEventListener('click', () => {
+      const text = encodeInput.value;
+      const encodingType = document.querySelector('input[name="encodingType"]:checked').value;
+      
+      let result = '';
+      try {
+        switch(encodingType) {
+          case 'base64':
+            result = decodeURIComponent(escape(atob(text)));
+            break;
+          case 'url':
+            result = decodeURIComponent(text);
+            break;
+          case 'html':
+            result = text.replace(/&amp;/g, '&')
+                       .replace(/&lt;/g, '<')
+                       .replace(/&gt;/g, '>')
+                       .replace(/&quot;/g, '"')
+                       .replace(/&#39;/g, "'");
+            break;
+          case 'hex':
+            result = text.split(' ').map(hex =>
+              String.fromCharCode(parseInt(hex, 16))
+            ).join('');
+            break;
+          case 'quoted-printable':
+            result = text.replace(/=([A-Fa-f0-9]{2})/g, (_, hex) =>
+              String.fromCharCode(parseInt(hex, 16))
+            );
+            break;
+        }
+        encodeOutput.value = result;
+      } catch (error) {
+        encodeOutput.value = 'Error: ' + error.message;
+      }
+    });
+
+    clearEncodeBtn.addEventListener('click', () => {
+      encodeInput.value = '';
+      encodeOutput.value = '';
+    });
+
+    copyEncodeBtn.addEventListener('click', () => {
+      encodeOutput.select();
+      document.execCommand('copy');
+      alert('Copied to clipboard!');
+    });
+
+    swapEncodeBtn.addEventListener('click', () => {
+      const temp = encodeInput.value;
+      encodeInput.value = encodeOutput.value;
+      encodeOutput.value = temp;
+    });
+
+    // Extraction Tool Functionality
+    const inputText = document.getElementById('inputText');
+    const extractionOutputText = document.getElementById('extractionOutputText');
+    const resultsInfo = document.getElementById('resultsInfo');
+    const copyExtractionBtn = document.getElementById('copyExtractionBtn');
+    const clearExtractionBtn = document.getElementById('clearExtractionBtn');
+    const associateIPs = document.getElementById('associateIPs');
+    const associationFilterContainer = document.getElementById('associationFilterContainer');
+    const associationFilterInput = document.getElementById('associationFilter');
+    const extractIPs = document.getElementById('extractIPs');
+    const extractServers = document.getElementById('extractServers');
+    const extractDomains = document.getElementById('extractDomains');
+
+    function performExtraction() {
+        const text = inputText.value;
+        const ipRegex = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
+
+        if (associateIPs.checked) {
+            const chunks = text.trim().split(/\n\s*\n/);
+            const associatedResults = [];
+
+            chunks.forEach(chunk => {
+                const lines = chunk.trim().split('\n');
+                if (lines.length < 2) return;
+
+                const sender = lines[0].trim();
+                const subject = lines[1].trim();
+                const foundIPs = chunk.match(ipRegex) || [];
+                
+                foundIPs.forEach(ip => {
+                    associatedResults.push({ sender, subject, ip });
+                });
+            });
+
+            const filterText = associationFilterInput.value.trim().toLowerCase();
+            let finalResults = associatedResults;
+
+            if (filterText) {
+                finalResults = associatedResults.filter(item => 
+                    item.sender.toLowerCase().includes(filterText) ||
+                    item.subject.toLowerCase().includes(filterText)
+                );
+            }
+
+            if (finalResults.length > 0) {
+                const outputString = finalResults.map(item => 
+                    `${item.sender}\n${item.subject}\n${item.ip}`
+                ).join('\n\n');
+                extractionOutputText.textContent = outputString;
+                resultsInfo.textContent = `Found ${finalResults.length} matching IP association(s).`;
+            } else {
+                extractionOutputText.textContent = 'No results match your filter criteria.';
+                resultsInfo.textContent = 'No matching associations found.';
+            }
+
+        } else {
+            // Original simple extraction logic
+            const options = {
+                ips: extractIPs.checked,
+                servers: extractServers.checked,
+                domains: extractDomains.checked
+            };
+
+            const results = {
+                ips: [], servers: [], domains: []
+            };
+
+            if (options.ips) {
+                results.ips = text.match(ipRegex) || [];
+            }
+            if (options.servers) {
+                const serverRegex = /\b(?:s|sr)_[a-zA-Z]+\d+_\d+\b|\b(?:server|srv|host)[-_]?[a-zA-Z0-9]+\b/gi;
+                results.servers = text.match(serverRegex) || [];
+            }
+            if (options.domains) {
+                const domainRegex = /\b(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}\b/g;
+                results.domains = text.match(domainRegex) || [];
+            }
+            displaySimpleExtractionResults(results);
+        }
+    }
+
+    function displaySimpleExtractionResults(results) {
+        let output = '';
+        let totalItems = 0;
+
+        if (results.ips.length > 0) {
+            const uniqueIPs = [...new Set(results.ips)];
+            output += 'IP Addresses:\n' + uniqueIPs.join('\n') + '\n\n';
+            totalItems += uniqueIPs.length;
+        }
+        if (results.servers.length > 0) {
+            const uniqueServers = [...new Set(results.servers)];
+            output += 'Server Names:\n' + uniqueServers.join('\n') + '\n\n';
+            totalItems += uniqueServers.length;
+        }
+        if (results.domains.length > 0) {
+            const uniqueDomains = [...new Set(results.domains)];
+            output += 'Domains:\n' + uniqueDomains.join('\n') + '\n\n';
+            totalItems += uniqueDomains.length;
+        }
+
+        if (output === '') {
+            extractionOutputText.textContent = 'No items found matching your criteria.';
+            resultsInfo.textContent = 'No items extracted.';
+        } else {
+            extractionOutputText.textContent = output.trim();
+            resultsInfo.textContent = `Extracted ${totalItems} unique item(s).`;
+        }
+    }
+
+    // Event listeners for extraction
+    inputText.addEventListener('input', performExtraction);
+    associationFilterInput.addEventListener('input', performExtraction);
+    associateIPs.addEventListener('change', () => {
+        associationFilterContainer.style.display = associateIPs.checked ? 'block' : 'none';
+        performExtraction();
+    });
+    extractIPs.addEventListener('change', performExtraction);
+    extractServers.addEventListener('change', performExtraction);
+    extractDomains.addEventListener('change', performExtraction);
+
+    copyExtractionBtn.addEventListener('click', () => {
+        const text = extractionOutputText.textContent;
+        if (text && !text.startsWith('No items')) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = copyExtractionBtn.textContent;
+                copyExtractionBtn.textContent = 'Copied!';
+                
+                setTimeout(() => {
+                    copyExtractionBtn.textContent = originalText;
+                }, 2000);
+            });
+        }
+    });
+
+    clearExtractionBtn.addEventListener('click', () => {
+        inputText.value = '';
+        associationFilterInput.value = '';
+        performExtraction();
+    });
+
+    // Add loading animation to buttons
+    document.querySelectorAll('.btn').forEach(btn => {
+        if (!btn.id.includes('history') && !btn.id.includes('closeHistory')) {
+            btn.addEventListener('click', function() {
+                this.classList.add('loading');
+                setTimeout(() => {
+                    this.classList.remove('loading');
+                }, 800);
+            });
+        }
+    });
+
+    // Initialize the app
+    window.addEventListener('load', () => {
+        buildHeaderCheckboxes();
+        performExtraction();
+    });
+  </script>
+</body>
+</html>
